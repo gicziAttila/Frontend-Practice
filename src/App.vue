@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 //1. Adatmodell (class/interface)$$
 import type { Student } from './classes/Student';
 import StudentCard from './components/StudentCard.vue';
@@ -8,6 +8,15 @@ import StudentForm from './components/StudentForm.vue';
 const students = ref<Student[]>([]);
 const isLoading = ref(false);
 const error = ref<string | null>(null);
+const searchQuery = ref('');
+const filteredStudents = computed(() => {
+    if (searchQuery.value.trim() === '') {
+        return students.value
+    }
+    else {
+        return students.value.filter((s) => s.name.toLowerCase().includes(searchQuery.value.toLocaleLowerCase()));
+    }
+})
 
 const fetchStudents = async () => {
     isLoading.value = true;
@@ -55,11 +64,19 @@ const addStudent = (name: string, isActive: boolean) => {
             {{ error }}
             <button @click="fetchStudents" class="block mx-auto mt-2 underline">Újrapróbálom</button>
         </div>
+
         <div class="mb-8" v-else>
             <StudentForm @add="addStudent" />
+            <div class="mb-6">
+                <input v-model="searchQuery" type="text" placeholder="Keresés név alapján..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+                <p v-if="searchQuery" class="text-sm text-gray-500 mt-1">
+                    Találatok száma: {{ filteredStudents.length }}
+                </p>
+            </div>
         </div>
         <div class="space-y-4">
-            <StudentCard v-for="s in students" :key="s.id" :student="s" @delete="deleteStudents" />
+            <StudentCard v-for="s in filteredStudents" :key="s.id" :student="s" @delete="deleteStudents" />
         </div>
         <p v-if="students.length === 0" class="text-center text-gray-500 mt-8 italic">
             Nincs több tanuló a listában.
