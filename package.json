@@ -14,7 +14,8 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix --cache",
-    "format": "prettier --write --experimental-cli src/"
+    "format": "prettier --write --experimental-cli src/",
+    "test": "vitest"
   },
   "dependencies": {
     "pinia": "^3.0.4",
@@ -43,7 +44,7 @@
     "typescript": "~5.9.3",
     "vite": "^7.3.0",
     "vite-plugin-vue-devtools": "^8.0.5",
-    "vitest": "^4.0.16",
+    "vitest": "^4.0.17",
     "vue-tsc": "^3.2.1"
   }
 }
